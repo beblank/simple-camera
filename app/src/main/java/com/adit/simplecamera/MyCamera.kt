@@ -37,7 +37,6 @@ class MyCamera : AppCompatActivity() {
             val cameraIntent = Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE)
             startActivityForResult(cameraIntent, CAMERA_REQUEST)
         }
-
     }
 
     private fun askPermission(){
@@ -52,46 +51,9 @@ class MyCamera : AppCompatActivity() {
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK){
             val photo = data!!.extras.get("data") as Bitmap
             imageView1.setImageBitmap(photo)
-            saveImage(photo)
+            Camera.saveImage(photo)
         }
     }
 
-    fun saveImage(photo:Bitmap):CharSequence?{
-        var file: File? = null
-        var result:CharSequence? = null
-        val outDir = File(dirPath)
-        file = File("$dirPath/${getDate()}.png")
-        createDir(outDir)
-        try {
-            file.createNewFile()
-            fOut  = FileOutputStream(file)
-                photo.compress(Bitmap.CompressFormat.PNG, 85, fOut)
-                result = "image saved"
-            fOut?.flush()
-            fOut?.close()
-        } catch (e:Exception){
-            toast("Error : $e")
-        }
-        return result
-    }
 
-    fun createDir(dir:File):Boolean{
-        var result:Boolean = false
-        if(!dir.exists()){
-            dir.mkdir()
-        }
-        return result
-    }
-
-    fun getDate():String{
-        var parsed:String? = null
-        try {
-            val format = DateFormat.getDateTimeInstance()
-            val date = Date()
-            parsed = format.format(date)
-        } catch (pe: ParseException) {
-            throw IllegalArgumentException(pe)
-        }
-        return parsed
-    }
 }
